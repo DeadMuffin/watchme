@@ -5,8 +5,10 @@
  */
 
 import './bootstrap';
-import { createApp } from 'vue/dist/vue.esm-bundler.js';
+import { createApp } from 'vue';
 import App from "../App.vue";
+
+
 
 
 /**
@@ -14,8 +16,8 @@ import App from "../App.vue";
  * registering components with the application instance so they are ready
  * to use in your application's views. An example is included for you.
  */
+createApp(App).mount('#body')
 
-createApp(App).mount('#body');
 
 
 

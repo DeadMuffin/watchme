@@ -16,6 +16,9 @@ class times extends Model
     protected $guarded = ['created_at', 'updated_at'];
     protected $fillable = ['comment', 'duration', 'project_id'];
 
+    static function get_all_times(){
+        return self::all();
+    }
 
     static function add_times($project_id, $duration, $comment = ''){
         self::create([

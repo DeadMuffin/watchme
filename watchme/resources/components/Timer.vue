@@ -1,5 +1,6 @@
 <template>
-    <button :class="{ 'Timer__button': TimerActivated}">
+    <div>
+    <button :class="{ 'Timer__button': TimerActivated, 'Timer': true}">
         <div class="Timer__numbers Timer__numbers--onhover">
             <span class="numbers">{{ timerValue.hours }}</span><span class="numbers">:</span>
             <span class="numbers" >{{ timerValue.minutes }}</span><span class="numbers">:</span>
@@ -8,10 +9,13 @@
         <img class="Timer__image" :src="displayImage" alt="E 404" />
 
     </button>
+    </div>
 </template>
 
 <style scoped>
-
+.Timer__button{
+    border-radius: 10px;
+}
 
 .Timer__button:hover .Timer__numbers--onhover {
     display: flex;
@@ -19,6 +23,8 @@
     justify-content: center;
     width: 50px;
     height: 50px;
+    background: #C0C0C0;
+    border:#6C6C6C solid;
 
 }
 .Timer__button:hover .Timer__image {
@@ -39,6 +45,12 @@
 .Timer__image{
     max-width: 50px;
     max-height: 50px;
+    border-radius: 10px;
+}
+.Timer{
+    border-radius: 10px;
+    background: #C0C0C0;
+    border:#6C6C6C solid;
 }
 
 </style>

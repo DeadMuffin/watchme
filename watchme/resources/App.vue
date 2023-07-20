@@ -36,7 +36,7 @@
 
     </div >
     <div class="grid-container__analytics" v-show="showanalytics">
-        <Analytics :update="showanalytics"></Analytics>
+        <Analytics :update="showanalytics" :projects="projects"></Analytics>
     </div>
     <div class="overlay" v-show="showSettings">
         <!-- Overlay-Inhalt -->
@@ -95,7 +95,7 @@ export default {
             showSettings: false,
             buttonmsg: "Submit",
             resetwatch: false,
-            showanalytics: false,
+            showanalytics: true,
         }
     },
     components:{

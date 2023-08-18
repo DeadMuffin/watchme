@@ -1,5 +1,4 @@
 <template>
-
     <div class="char-minutes-per-timeperiod">
         <div class="date-time-picker__container">
             <vue-ctk-date-time-picker
@@ -28,16 +27,18 @@
         <table class="custom-table">
             <thead>
             <tr>
+                <th>Date</th>
                 <th>Name</th>
-                <th>Duration</th>
+                <th>Duration pro h</th>
                 <th>Comment</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(projectid, index) in filteredData_minutes_per_timeperiod['project_id']" :key="index" v-show="projectid !== null">
+            <tr v-for="(projectid, index) in filteredData_minutes_per_timeperiod['tabledata'][1]" :key="index" v-show="projectid !== null">
+                <td>{{ filteredData_minutes_per_timeperiod['tabledata'][0][index] }}</td>
                 <td>{{ projectid }}</td>
-                <td>{{ filteredData_minutes_per_timeperiod['data'][index] }}</td>
-                <td>{{ filteredData_minutes_per_timeperiod['comment'][index] }}</td>
+                <td>{{ filteredData_minutes_per_timeperiod['tabledata'][2][index] }}</td>
+                <td>{{ filteredData_minutes_per_timeperiod['tabledata'][3][index] }}</td>
             </tr>
             </tbody>
         </table>
@@ -72,7 +73,8 @@ export default {
             handler(value){
                 if(value)
                     this.getData();
-            }
+            },
+            immediate: true,
         },
         filteredData_minutes_per_project: {
             handler() {
@@ -148,7 +150,7 @@ export default {
                     labels: this.filteredData_minutes_per_project.labels,
                     datasets: [
                         {
-                            label: "Min",
+                            label: "Hours",
                             data: this.filteredData_minutes_per_project.data,
                             borderWidth: 1,
                             backgroundColor: [],
@@ -205,7 +207,7 @@ export default {
                 const durations = raw_data
                     .filter(entry => entry.project_id === projectName)
                     .reduce((total, entry) => total + entry.duration, 0);
-                result[1][i] = durations / 60;
+                result[1][i] = (durations / 60/60).toFixed(2);
             }
             return result;
         },
@@ -217,51 +219,54 @@ export default {
 
             return this.generateDateArray(raw_data);
         },
-        generateDateArray(dates) {
-            let startDate;
-            let endDate;
+         generateDateArray(dates) {
+             let startDate;
+             let endDate;
 
-            if (this.date !== "") {
-                startDate = new Date(this.date.start);
-                endDate = new Date(this.date.end);
-            } else {
-                startDate = new Date(dates[0].created_at);
-                endDate = new Date(dates[dates.length - 1].created_at);
-            }
+             if (this.date !== "") {
+                 startDate = new Date(this.date.start);
+                 endDate = new Date(this.date.end);
+             } else {
+                 startDate = new Date(dates[0].created_at);
+                 endDate = new Date(dates[dates.length - 1].created_at);
+                 endDate.setDate(endDate.getDate() + 1);
+             }
 
-            const resultArray = [[], [], [], []];
-            const dateMap = new Map();
+             const durationArray = [[],[]];
+             const allData = [[],[],[],[]];
 
-            let currentDate = new Date(startDate); // Kopie des Startdatums, um es zu verändern
+             let currentDate = new Date(startDate);
 
-            while (currentDate <= endDate) {
-                const dateString = currentDate.toISOString().split('T')[0]; // Extrahiere das Datum als String im Format "YYYY-MM-DD"
+             while (endDate >= currentDate) {
+                 console.log(currentDate + "----" + endDate);
 
-                resultArray[0].push(dateString); // Füge das Datum zum ersten Array hinzu
+                 const dateString = currentDate.toISOString().split('T')[0];
 
-                // Überprüfe, ob es einen Eintrag für das Datum in den ursprünglichen Daten gibt
-                const entry = dates.find(entry => {
-                    const entryDate = new Date(entry.created_at);
-                    return entryDate.toISOString().split('T')[0] === dateString &&
-                        (this.selectedproject === 'All Projects' || entry.project_id === this.selectedproject);
-                });
+                 const entriesForDate = dates.filter(entry => {
+                     const entryDate = new Date(entry.created_at);
+                     return entryDate.toISOString().split('T')[0] === dateString &&
+                         (this.selectedproject === 'All Projects' || entry.project_id === this.selectedproject);
+                 });
 
-                const duration = entry ? entry.duration : 0;
-                resultArray[1].push(duration / 60 / 60); // Füge die Duration zum zweiten Array hinzu
+                 let totalDuration = 0;
 
-                if (entry) {
-                    resultArray[2].push(entry.project_id); // Füge die project_id zum dritten Array hinzu
-                    resultArray[3].push(entry.comment); // Füge den comment zum vierten Array hinzu
-                } else {
-                    resultArray[2].push(null); // Füge null hinzu, wenn kein passender Eintrag gefunden wurde
-                    resultArray[3].push(null); // Füge null hinzu, wenn kein passender Eintrag gefunden wurde
-                }
+                 entriesForDate.forEach(entry => {
+                     totalDuration += entry.duration || 0;
+                     allData[0].push(dateString);
+                     allData[1].push(entry.project_id);
+                     allData[2].push((entry.duration / 60 / 60).toFixed(2));
+                     allData[3].push(entry.comment);
+                 });
 
-                currentDate.setDate(currentDate.getDate() + 1); // Inkrementiere den aktuellen Tag um 1
-            }
+                 durationArray[0].push(dateString);
+                 durationArray[1].push((totalDuration / 60 / 60).toFixed(2));
 
-            return resultArray;
-        }
+                 currentDate.setDate(currentDate.getDate() + 1);
+
+             }
+             return [durationArray, allData];
+
+}
 
     },
 
@@ -294,12 +299,17 @@ export default {
         },
         filteredData_minutes_per_timeperiod() {
             let filtereddata = this.filterData_minutes_per_timeperiod();
-
-            return  {
-                labels: filtereddata[0],
-                data: filtereddata[1],
-                project_id: filtereddata[2],
-                comment: filtereddata[3]
+            if(filtereddata[1] !== undefined) {
+                return {
+                    labels: filtereddata[0][0],
+                    data: filtereddata[0][1],
+                    tabledata: filtereddata[1]
+                };
+            }
+            return {
+                labels: [],
+                data: [],
+                tabledata: [[],[],[],[]]
             };
 
         },

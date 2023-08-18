@@ -12,13 +12,13 @@
                :TimerActivated="watertimer"
                :display-image="imagedrinktimer"
                @click="activateWaterTimer"
-               @expired="handleTimerExpiredwater('Water')"
+               @expired="handleTimerExpired('Water')"
         ></Timer>
         <Timer  :TimerDuration="standtimerduration*60"
                :TimerActivated="standtimer"
                :display-image="imagestandtimer"
                @click="activateStandTimer"
-               @expired="handleTimerExpiredstanding('Standing')"
+               @expired="handleTimerExpired('Standing')"
         ></Timer>
     </div>
     <div class="grid-container__main" v-show="!showanalytics">
@@ -65,7 +65,7 @@ import Timer from "./components/Timer.vue";
 import Stoppuhr from "./components/Stoppuhr.vue";
 import activedrinkimage from "./assests/waterbottle_activated.png";
 import disableddrinkimage from "./assests/waterbottle_deactivated.png";
-import alertsound from "./assests/alert-bell.wav";
+//import alertsound from "./assests/sound"; you can specifify here an sound which plays when your timers expires (you also need to uncomment on line 203 - 207
 import activestandimage from "./assests/standup_activated.png";
 import disabledstandimage from "./assests/standup_deactivated.png";
 import settingsimage from "./assests/icons_settings.png";
@@ -95,7 +95,7 @@ export default {
             showSettings: false,
             buttonmsg: "Submit",
             resetwatch: false,
-            showanalytics: true,
+            showanalytics: false,
         }
     },
     components:{
@@ -197,24 +197,17 @@ export default {
                 this.imagestandtimer = activestandimage;
             }else this.imagestandtimer = disabledstandimage;
         },
-        handleTimerExpiredstanding(timerType) {
+        handleTimerExpired(timerType) {
 
-            const audio = new Audio(alertsound); // Passe den Dateinamen und Pfad zu deinem Alarmton an
+            // comment out and remove the alert at the bottom to play a sound when expanding
+            /*const audio = new Audio(alertsound);
             audio.addEventListener('ended', function() {
                 alert("Timer expired: " + timerType);
             });
-            audio.play();
+            audio.play();*/
             // Do something with the timerType variable
+            alert("Timer expired: " + timerType);
         },
-        handleTimerExpiredwater(timerType) {
-            const audio = new Audio(alertsound); // System-Alarmton
-            audio.addEventListener('ended', function() {
-                alert("Timer expired: " + timerType);
-            });
-            audio.play();
-
-        // Do something with the timerType variable
-    },
 
     }
 }

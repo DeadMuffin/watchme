@@ -238,7 +238,6 @@ export default {
              let currentDate = new Date(startDate);
 
              while (endDate >= currentDate) {
-                 console.log(currentDate + "----" + endDate);
 
                  const dateString = currentDate.toISOString().split('T')[0];
 

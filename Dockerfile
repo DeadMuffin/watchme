@@ -35,5 +35,3 @@ RUN npm run build
 
 RUN mv .env.example .env
 RUN php artisan key:generate
-
-CMD ["php","artisan","serve", "--host", "0.0.0.0"]

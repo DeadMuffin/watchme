@@ -20,17 +20,30 @@
                 <button @click="addnewproject">Submit</button>
             </div>
 
-            <div v-if="selectedOption === 'Time' && newrequestsucceded === ''">
-                <select class="overlay-content__time__name" placeholder="Project Name">
-                    <option v-for="project in projects">
-                    {{project.name}}</option>
-                </select>
-                <input class="overlay-content__time__duration" placeholder="Duration"/>min
-                <br>
-                <textarea class="overlay-content__time__comment" placeholder="Enter Comment here!"/>
-                <br>
-                <button @click="addnewtime">Submit</button>
+            <div v-if="selectedOption === 'Time' && newrequestsucceded === ''" class="time-entry-form">
+                <div class="form-group">
+                    <label for="projectSelect">Project Name:</label>
+                    <select id="projectSelect" class="overlay-content__time__name">
+                        <option v-for="project in projects">{{ project.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="theselectedDate">Date:</label>
+                    <input type="date" id="theselectedDate" v-model="selectedDate" class="overlay-content__time__date">
+                </div>
+                <div class="form-group">
+                    <label for="durationInput">Duration:</label>
+                    <input type="text" id="durationInput" class="overlay-content__time__duration" placeholder="min">
+                </div>
+                <div class="form-group">
+                    <label for="commentTextarea">Comment:</label>
+                    <textarea id="commentTextarea" class="overlay-content__time__comment" placeholder="Enter Comment here!"></textarea>
+                </div>
+                <div class="form-group">
+                    <button @click="addnewtime" class="submit-button">Submit</button>
+                </div>
             </div>
+
             <h1 class="colored__gold">{{newrequestsucceded}}</h1>
         </div>
     </div>
@@ -82,16 +95,20 @@ export default {
     emits: ['newproject'],
     props:['projects'],
     data() {
+        const todaysDay = new Date().toISOString().slice(0, 10); // Get today's date in "yyyy-MM-dd" format
         return {
+            today: todaysDay,
             selectedOption: "ADD",
             showOverlay: false,
-            newrequestsucceded: ""
+            newrequestsucceded: "",
+            selectedDate: this.today,
         };
     },
     methods: {
         showOverlayfunc() {
             this.showOverlay = true;
             this.newrequestsucceded= "";
+            this.selectedDate= this.today;
         },
         hideOverlay() {
             this.showOverlay = false;
@@ -122,15 +139,18 @@ export default {
         addnewtime(){
             let inputdata = document.querySelectorAll('[class*="overlay-content__time__"]');
             let name = inputdata.item(0).value ?? "";
-            let duration = inputdata.item(1).value ?? -1;
-            let comment = inputdata.item(2).value ?? "";
+            let duration = inputdata.item(2).value ?? -1;
+            let comment = inputdata.item(3).value ?? "";
+            let date = this.selectedDate;
             if (name === "" || duration < 0) return;
+
             duration = duration*60;
 
             let data = new FormData();
             data.append('projectname', name);
             data.append('duration', duration);
             data.append('comment', comment);
+            data.append('created_at', date);
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "api/projects/times/add");
             xhr.onreadystatechange = () => {

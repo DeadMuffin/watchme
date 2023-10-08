@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  mariadb:
+    container_name: watchme-database
+    image: mariadb
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./watchme\watchme\database:/docker-entrypoint-initdb.d  # Mount the directory containing SQL scripts
+    ports:
+      - 3306:3306
+    command: --init-file /docker-entrypoint-initdb.d/init.sql  # Specify the initialization script
+
+  frontend:
+    container_name: watchme-frontend
+    hostname: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    command: sh -c "php artisan migrate && php artisan serve --host 0.0.0.0"

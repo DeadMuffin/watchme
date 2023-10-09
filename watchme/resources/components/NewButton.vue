@@ -22,21 +22,17 @@
 
             <div v-if="selectedOption === 'Time' && newrequestsucceded === ''" class="time-entry-form">
                 <div class="form-group">
-                    <label for="projectSelect">Project Name:</label>
                     <select id="projectSelect" class="overlay-content__time__name">
                         <option v-for="project in projects">{{ project.name }}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="theselectedDate">Date:</label>
                     <input type="date" id="theselectedDate" v-model="selectedDate" class="overlay-content__time__date">
                 </div>
                 <div class="form-group">
-                    <label for="durationInput">Duration:</label>
-                    <input type="text" id="durationInput" class="overlay-content__time__duration" placeholder="min">
+                    <input type="text" id="durationInput" class="overlay-content__time__duration" placeholder="Duration in min!">min
                 </div>
                 <div class="form-group">
-                    <label for="commentTextarea">Comment:</label>
                     <textarea id="commentTextarea" class="overlay-content__time__comment" placeholder="Enter Comment here!"></textarea>
                 </div>
                 <div class="form-group">

@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  mariadb:
+  watchme-mariadb:
     container_name: watchme-database
     image: mariadb
     restart: unless-stopped
@@ -13,7 +13,7 @@ services:
       - 3306:3306
     command: --init-file /docker-entrypoint-initdb.d/init.sql  # Specify the initialization script
 
-  frontend:
+  watchme-frontend:
     container_name: watchme-frontend
     hostname: frontend
     build:
@@ -23,5 +23,5 @@ services:
       - 8000:8000
     restart: unless-stopped
     depends_on:
-      - mariadb
+      - watchme-mariadb
     command: sh -c "php artisan migrate && php artisan serve --host 0.0.0.0"

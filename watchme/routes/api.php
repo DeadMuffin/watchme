@@ -26,4 +26,6 @@ Route::post('/projects/add',[watchmeController::class,'api_add_new_project']);
 Route::get('/projects',[watchmeController::class,'api_get_projects']);
 Route::post('/times/add',[watchmeController::class,'api_add_new_time']);
 Route::get('/all',[watchmeController::class,'api_get_all']);
-Route::post('/import/all',[watchmeController::class,'api_import_times']);
+Route::post('/import/times',[watchmeController::class,'api_import_times']);
+Route::post('/import/projects',[watchmeController::class,'api_import_projects']);
+Route::get('/export/all',[watchmeController::class,'api_get_all']);

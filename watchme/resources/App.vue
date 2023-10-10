@@ -146,7 +146,6 @@ export default {
             let comment = document.getElementsByClassName("main__comment")[0].value;
             let selectedIndex = document.getElementsByClassName("main__select").item(0).selectedIndex;
             let projectname  = document.getElementsByClassName("main__select").item(0).options[selectedIndex].text;
-
             if(duration === 0){
                 this.buttonmsg = "Duration is Zero!";
                 sendbutton.style.background = "red";
@@ -164,7 +163,7 @@ export default {
             data.append('duration',duration);
             data.append('comment',comment);
             data.append('projectname',projectname);
-
+            data.append('created_at',new Date().toISOString().slice(0, 10)); // Get today's date in "yyyy-MM-dd" format
             let xhr = new XMLHttpRequest();
             xhr.open('POST','/api/projects/times/add');
             xhr.onreadystatechange = ()=>{
@@ -180,10 +179,19 @@ export default {
                          this.buttonmsg = "Submit";
                          this.resetwatch = false;
                         }, 1500)
+                 }else {
+                     this.buttonmsg = "Something went wrong!";
+                     sendbutton.style.background = "red";
+                     setTimeout(() => {
+                         sendbutton.style.background = "#C0C0C0";
+                         this.buttonmsg = "Submit";
+                         this.resetwatch = false;
+                     }, 1500)
                  }
                 }
             }
            xhr.send(data);
+
         },
         activateWaterTimer(){
             this.watertimer = !this.watertimer;

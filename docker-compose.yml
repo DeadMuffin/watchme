@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  watchme-mariadb:
+  mariadb:
     container_name: watchme-database
     image: mariadb
     restart: unless-stopped
@@ -15,7 +15,6 @@ services:
 
   watchme-frontend:
     container_name: watchme-frontend
-    hostname: frontend
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,5 +22,5 @@ services:
       - 8000:8000
     restart: unless-stopped
     depends_on:
-      - watchme-mariadb
+      - mariadb
     command: sh -c "php artisan migrate && php artisan serve --host 0.0.0.0"

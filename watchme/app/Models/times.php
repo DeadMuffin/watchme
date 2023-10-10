@@ -21,11 +21,10 @@ class times extends Model
        return self::orderBy('created_at')->get();
     }
 
-    static function add_times($project_id, $duration, $comment = '', $created_at = null)
+    static function add_times($project_id, $duration, $comment = '', $created_at = '')
     {
         $customCreatedAt = now()->addHours(2);
-
-        if (is_null($created_at)) {
+        if ($created_at == "") {
             self::create([
                 'project_id' => $project_id,
                 'duration' => $duration,
@@ -33,26 +32,29 @@ class times extends Model
                 'created_at' => $customCreatedAt,
                 'updated_at' => $customCreatedAt
             ]);
+             return true;
         } else {
             // Convert the date string to a DateTime object
             $timeString = '00:00:00';
-            $dateTime = DateTime::createFromFormat('d.m.Y', $created_at);
-
-            if ($dateTime !== false) {
-                // Format the DateTime object with your desired time string
-                $customCreatedAt = $dateTime->format('Y-m-d') . ' ' . $timeString;
-
-            self::create([
-                'project_id' => $project_id,
-                'duration' => $duration,
-                'comment' => $comment,
-                'created_at' => $customCreatedAt,
-                'updated_at' => $customCreatedAt
-            ]);
-            } else {
-                // Handle invalid date format
-                // You may want to throw an exception or log an error here
+            $customCreatedAt;
+            $dateTime = DateTime::createFromFormat('Y-m-d', $created_at);
+            if ($dateTime !== false){
+              $customCreatedAt = $dateTime->format('Y-m-d') . ' ' . $timeString;
             }
+            else{
+                $dateTime = DateTime::createFromFormat('d.m.Y', $created_at);
+                $customCreatedAt = $dateTime->format('Y-m-d') . ' ' . $timeString;
+            }
+
+
+                self::create([
+                    'project_id' => $project_id,
+                    'duration' => $duration,
+                    'comment' => $comment,
+                    'created_at' => $customCreatedAt,
+                    'updated_at' => $customCreatedAt
+                ]);
+                return true;
         }
     }
 }

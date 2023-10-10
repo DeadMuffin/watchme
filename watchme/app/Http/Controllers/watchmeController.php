@@ -76,18 +76,26 @@ class watchmeController extends Controller
                 $id = projects::get_project_id($time['projectname']) ?? -1;
 
 
-                if($id === -1) return response()->json("No Project with this name available".$time['projectname'], 404);
+                if($id === -1) return response()->json("No Project ".$time['projectname']." available", 404);
 
                 times::add_times($id,$time['duration']*60*60,$time['comment'],$time['created_at']);
             }
                 return response()->json("successfully created", 201);
         } return response()->json("Problem with import", 500);
 
+    }
 
+    function api_import_projects(Request $request) {
+        $data =  $request->all();
+        // Process the "projects" array
+        $string = "";
+        if (isset($data['projects']) && is_array($data['projects'])) {
+            foreach ($data['projects'] as $project) {
+                projects::add_project($project);
 
-        // Now you have the times and projects data stored in $timesData and $projectsData
-        // You can perform further actions or return these arrays as needed
-
+            }
+            return response()->json("successfully created", 201);
+        } return response()->json("Problem with import", 500);
     }
 
 

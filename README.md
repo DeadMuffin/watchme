@@ -37,7 +37,7 @@ Requirements:
 
 - Ensure you have Docker installed and running on your system.
 
-- Download Configuration Files: Obtain the Dockerfile and Docker-compose.yml from this repository. Store them in the location where you want to store your project data.
+- Download Configuration Files: Obtain the Dockerfile, Docker-compose.yml and init.sql from this repository. Store them in the location where you want to store your project data.
 
 - Navigate to the Project Directory: Open your terminal and navigate to the directory where you've placed the configuration files and where you want the data to be stored.
 
